@@ -14,6 +14,7 @@ namespace Moody.Components
     public class FirstPersonCamera : Camera
     {
         public float speed = 5;
+        public float orbitalSpeed = 100;
 
         public override void Start()
         {
@@ -41,10 +42,11 @@ namespace Moody.Components
 
         public override void Update(float deltaTime)
         {
-            var MouseX = MemberScene.InputDispatcher.Axes[InputAxes.MouseX].GetValue();
-            var MouseY = MemberScene.InputDispatcher.Axes[InputAxes.MouseY].GetValue();
+            var MouseX = MemberScene.InputDispatcher.Axes[InputAxes.MouseX].GetValue() * deltaTime * orbitalSpeed;
+            var MouseY = MemberScene.InputDispatcher.Axes[InputAxes.MouseY].GetValue() * deltaTime * orbitalSpeed;
 
-            Transform.Rotation *= Quaternion.CreateFromYawPitchRoll(MouseX, -MouseY, 0).AsNormal();
+            Transform.Rotation = Transform.Rotation * Quaternion.CreateFromYawPitchRoll(0, -MouseY, 0);
+            Transform.Rotation = Quaternion.CreateFromYawPitchRoll(MouseX, 0, 0) * Transform.Rotation;
             Transform.Rotation.Normalize();
 
             base.Update(deltaTime);
